@@ -44,19 +44,6 @@ class AdController extends AbstractController
 
         $ad = new Ad();
 
-        $image1 = new Image();
-        $image1->setUrl("https://picsum.photos/400/200")
-            ->setCaption('Titre 1');
-    
-        $ad->addImage($image1);
-
-        $image2 = new Image();
-        $image2->setUrl("https://picsum.photos/400/200")
-            ->setCaption('Titre 2');
-
-        $ad->addImage($image2);
-
-
         $form = $this->createForm(AnnonceType::class, $ad);
 
         // $arrayForm = $request->request->all();
@@ -65,6 +52,14 @@ class AdController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid())
         {
+            // gestion des images 
+            foreach($ad->getImages() as $image)
+            {
+                $image->setAd($ad);
+                $manager->persist($image);
+            }
+
+
             // je persiste mon objet Ad
             $manager->persist($ad);
             // j'envoie les persistances dans la bdd
