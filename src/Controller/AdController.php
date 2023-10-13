@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Ad;
 use App\Form\AnnonceType;
 use App\Repository\AdRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,11 +38,30 @@ class AdController extends AbstractController
      * @return Response
      */
     #[Route("/ads/new", name:"ads_create")]
-    public function create(): Response
+    public function create(Request $request, EntityManagerInterface $manager): Response
     {
 
         $ad = new Ad();
         $form = $this->createForm(AnnonceType::class, $ad);
+
+        // $arrayForm = $request->request->all();
+        // dump($arrayForm);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            // je persiste mon objet Ad
+            $manager->persist($ad);
+            // j'envoie les persistances dans la bdd
+            $manager->flush();
+
+            $this->addFlash('success', "L'annonce <strong>".$ad->getTitle()."</strong> a bien été enregistrée");
+
+            return $this->redirectToRoute('ads_show',[
+                'slug' => $ad->getSlug()
+            ]);
+
+        }
 
         return $this->render("ad/new.html.twig",[
             'myForm' => $form->createView()
