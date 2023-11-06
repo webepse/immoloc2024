@@ -154,6 +154,8 @@ class AccountController extends AbstractController
                 'success',
                 "Les données ont été enregistrées avec succés"
             );
+
+            return $this->redirectToRoute('account_index');
         }
 
         return $this->render("account/profile.html.twig",[
@@ -198,7 +200,7 @@ class AccountController extends AbstractController
                     'Votre mot de passe a bien été modifié'
                 );
 
-                return $this->redirectToRoute('homepage');
+                return $this->redirectToRoute('account_index');
             }
 
         }
@@ -231,7 +233,7 @@ class AccountController extends AbstractController
             );
         }
 
-        return $this->redirectToRoute('homepage');
+        return $this->redirectToRoute('account_index');
 
     }
 
@@ -285,7 +287,7 @@ class AccountController extends AbstractController
                 'Votre avatar a bien été modifié'
               );
 
-              return $this->redirectToRoute('homepage');
+              return $this->redirectToRoute('account_index');
 
         }
 
