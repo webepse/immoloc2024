@@ -69,6 +69,55 @@ class Booking
         return $diff->days;
     }
 
+    /**
+     * Permet de vérifier si les dates sont réservables
+     *
+     * @return boolean|null
+     */
+    public function isBookableDates(): ?bool
+    {
+        // connaitres les date impossible pour l'annonce
+        $notAvailableDays = $this->ad->getNotAvailableDays();
+        // comparer les dates choisies avec les dates impossible
+        $bookingDays = $this->getDays();
+
+        // transformation des objets dateTime en tableau de chaines de caractères pour les journées (facilite la comparaison)
+        $days = array_map(function($day){
+            return $day->format('Y-m-d');
+        },$bookingDays);
+
+        $notAvailable = array_map(function($day){
+            return $day->format('Y-m-d');
+        },$notAvailableDays);
+
+        foreach($days as $day){
+            if(array_search($day, $notAvailable) !== false) return false;
+        }
+
+
+        return true;
+
+    }
+
+    /**
+     * Permet de récupérer un tableau des journées qui correspondent à ma réservation
+     *
+     * @return array|null Un tableau d'objets DateTime représentant les jours de la réservation
+     */
+    public function getDays(): ?array
+    {
+        $resultat = range(
+            $this->startDate->getTimestamp(),
+            $this->endDate->getTimestamp(),
+            24*60*60
+        );
+        $days = array_map(function($dayTimestamp){
+            return new \DateTime(date('Y-m-d',$dayTimestamp));
+        },$resultat);
+
+        return $days;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
