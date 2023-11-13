@@ -178,7 +178,7 @@ class AdController extends AbstractController
     {
         // $ad = $repo->findby(["slug"=>$slug])
 
-        // dump($ad);
+        dump($ad);
 
         return $this->render("ad/show.html.twig", [
             'ad' => $ad
