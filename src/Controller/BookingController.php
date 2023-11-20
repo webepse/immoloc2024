@@ -37,16 +37,17 @@ class BookingController extends AbstractController
                     'Les dates que vous avez choisie ne peuvent être réservées: elles sont déjà prises!'
                 );
             }else{
-                $this->addFlash(
-                    'success',
-                    "Merci pour votre réservation"
-                );
+                // $this->addFlash(
+                //     'success',
+                //     "Merci pour votre réservation"
+                // );
     
                 $manager->persist($booking);
                 $manager->flush();
 
-                return $this->redirectToRoute('ads_show',[
-                    'slug'=>$ad->getSlug()
+                return $this->redirectToRoute('booking_show',[
+                    'id'=>$booking->getId(),
+                    'withAlert' => true
                 ]);
 
             }
@@ -56,6 +57,22 @@ class BookingController extends AbstractController
         return $this->render('booking/book.html.twig', [
             'myForm' => $form->createView(),
             'ad' => $ad
+        ]);
+    }
+
+
+    /**
+     * Permet d'afficher la page d'un réservation
+     *
+     * @param Booking $booking
+     * @return Response
+     */
+    #[Route("/booking/{id}", name:"booking_show")]
+    #[IsGranted("ROLE_USER")]
+    public function show(Booking $booking): Response
+    {
+        return $this->render("booking/show.html.twig",[
+            'booking' => $booking
         ]);
     }
 }
