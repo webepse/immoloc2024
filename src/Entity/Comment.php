@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Comment
 {
     #[ORM\Id]
@@ -30,6 +31,21 @@ class Comment
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $author = null;
+
+
+    /**
+     * Permet de mettre ne place la date de création automatiquement
+     *
+     * @return void
+     */
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        if(empty($this->createdAt))
+        {
+            $this->createdAt = new \DateTime();
+        }
+    }
 
     public function getId(): ?int
     {

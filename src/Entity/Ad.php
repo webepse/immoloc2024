@@ -2,14 +2,15 @@
 
 namespace App\Entity;
 
+use App\Entity\Comment;
 use Cocur\Slugify\Slugify;
 use Doctrine\DBAL\Types\Types;
 use App\Repository\AdRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: AdRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -104,6 +105,41 @@ class Ad
             $notAvailableDays = array_merge($notAvailableDays,$days);
         }
         return $notAvailableDays;
+    }
+
+    /**
+     * Permet de récup la note d'une annonce
+     *
+     * @return integer
+     */
+    public function getAvgRatings(): int
+    {
+        // calculer la somme des notations
+        // la fonction array_reduce permet de réduire le tableau à une seule valeur (attention il faut un tableau pas une array Collection)1er param c'est le tableau à reduire et en 2ème paramètre de la fonction c'est la fonction à faire pour chaque valeur, 3ème c'est la valeur par défaut
+        $sum = array_reduce($this->comments->toArray(),function($total,$comment){
+            return $total + $comment->getRating();
+        },0);
+
+        // faire la division pour avoir la moyenne (ternaire)
+        if(count($this->comments) > 0) return $moyenne = round($sum / count($this->comments));
+
+        return 0;
+    }
+
+    /**
+     * Permet de récupérer le commentaire d'un auteur par rapport à une annonce
+     *
+     * @param User $author
+     * @return Comment|null
+     */
+    public function getCommentFromAuthor(User $author): ?Comment
+    {
+        foreach($this->comments as $comment)
+        {
+            if($comment->getAuthor() === $author) return $comment;
+        }
+
+        return null;
     }
 
     public function getId(): ?int
