@@ -13,7 +13,13 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class BookingType extends ApplicationType
 {
-    
+    // private $transformer;
+
+    // public function __construct(FrenchToDateTimeTransformer $transformer)
+    // {
+    //     $this->transformer = $transformer;
+    // }
+
     public function __construct(
         private FrenchToDateTimeTransformer $transformer
     ) {}
