@@ -21,7 +21,6 @@ class AccountType extends ApplicationType
             ->add('email', EmailType::class, $this->getConfiguration("Email", "Votre adresse e-mail..."))
             ->add('introduction', TextType::class, $this->getConfiguration("Introduction", "Présentation rapide"))
             ->add('description', TextareaType::class, $this->getConfiguration("Description détaillée", "Présentez vous avec un peu plus de détails"))
-           
         ;
     }
 
