@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Booking;
 use App\Repository\BookingRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AdminBookingController extends AbstractController
 {
@@ -15,5 +18,19 @@ class AdminBookingController extends AbstractController
         return $this->render('admin/booking/index.html.twig', [
             'bookings' => $repo->findAll()
         ]);
+    }
+
+    /**
+     * Permet de modifier une réservation
+     *
+     * @param Booking $booking
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
+    #[Route("/admin/bookings/{id}/edit", name: "admin_bookings_edit")]
+    public function edit(Booking $booking, Request $request, EntityManagerInterface $manager): Response
+    {
+        $form = $this->createForm(BookingType::class, $booking);
     }
 }
