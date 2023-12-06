@@ -23,7 +23,7 @@ class AdminAdController extends AbstractController
     #[Route('/admin/ads/{page<\d+>?1}', name: 'admin_ads_index')]
     public function index(PaginationService $pagination, int $page): Response
     {
-        $pagination->setEntityClass(Ad::class)
+        $pagination->setEntityClass(Ad::class) // App\Entity\Ad string
                 ->setPage($page)
                 ->setLimit(10);
        
