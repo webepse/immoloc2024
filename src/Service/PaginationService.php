@@ -58,6 +58,13 @@ class PaginationService{
      */
     private $templatePath;
 
+    /**
+     * un tableau pour ordonner les résultats
+     *
+     * @var array|null
+     */
+    private ?array $order = null;
+
 
 
     /**
@@ -122,6 +129,28 @@ class PaginationService{
     }
 
     /**
+     * Permet de spécifier l'ordre que l'on souhaite afficher pour les résultats
+     *
+     * @param array $myOrder
+     * @return self
+     */
+    public function setOrder(array $myOrder): self
+    {
+        $this->order = $myOrder;
+        return $this;
+    }
+
+    /**
+     * Permet de récupérer le tableau des order
+     *
+     * @return array
+     */
+    public function getOrder(): array
+    {
+        return $this->order;
+    }
+
+    /**
      * Permet de spécifier la page que l'on souhaite afficher
      *
      * @param int $page
@@ -165,7 +194,7 @@ class PaginationService{
 
         return $this->manager
                         ->getRepository($this->entityClass)
-                        ->findBy([],[],$this->limit,$offset);
+                        ->findBy([],$this->order,$this->limit,$offset);
     }
 
 
