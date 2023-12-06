@@ -19,11 +19,30 @@ class AdminAdController extends AbstractController
      * @param AdRepository $repo
      * @return Response
      */
-    #[Route('/admin/ads', name: 'admin_ads_index')]
-    public function index(AdRepository $repo): Response
+    #[Route('/admin/ads/{page<\d+>?1}', name: 'admin_ads_index')]
+    public function index(AdRepository $repo, int $page): Response
     {
+        //Route('/admin/ads/{page?1}', name: 'admin_ads_index', requirements:["page"=>"\d+"])
+        // $ad = $repo->find(531);
+        // $ad = $repo->findBy(['title'=>'annonce']);
+        // findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+        
+
+         $limit = 10;
+         $start = $page * $limit - $limit;
+         // page 1 * 10 = 10 - 10 = 0
+         // page 2 * 10 = 20 - 10 = 10
+
+         $total = count($repo->findAll());
+         // 3.1 => 4
+         $pages = ceil($total / $limit);
+
+         $ads = $repo->findBy([],[],$limit,$start);
+
         return $this->render('admin/ad/index.html.twig', [
-            'ads' => $repo->findAll(),
+            'ads' => $ads,
+            'pages' => $pages,
+            'page' => $page
         ]);
     }
 
