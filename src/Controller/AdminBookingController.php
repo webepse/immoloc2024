@@ -54,4 +54,25 @@ class AdminBookingController extends AbstractController
             'myForm' => $form->createView()
         ]);
     }
+
+    /**
+     * Permet de supprimer une réservation
+     *
+     * @param Booking $booking
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
+    #[Route("/admin/bookings/{id}/delete", name:"admin_bookings_delete")]
+    public function delete(Booking $booking, EntityManagerInterface $manager): Response
+    {
+        $this->addFlash(
+            'success',
+            'La réservation n°<strong>'.$booking->getId().'</strong> a bien été supprimée'
+        );
+        $manager->remove($booking);
+        $manager->flush();
+
+        return $this->redirectToRoute('admin_bookings_index');
+    }
+
 }
