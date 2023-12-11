@@ -26,6 +26,15 @@ class AdminAccountController extends AbstractController
             // l'ereur est due à la limitation de tentative de connexion
             $loginError = "Trop de tentatives de connexion. Réessayez plus tard";
         }
+
+        $user = $this->getUser();
+        if($user)
+        {
+            if(in_array('ROLE_ADMIN', $user->getRoles()))
+            {
+                return $this->redirectToRoute('admin_dashboard_index');
+            }
+        }
         
         return $this->render('admin/account/login.html.twig', [
             'hasError' => $error !== null,
